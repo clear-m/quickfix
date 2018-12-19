@@ -119,7 +119,7 @@ int socket_bind( int socket, const char* hostname, int port )
 
 int socket_createAcceptor(int port, bool reuse)
 {
-  int socket = ::socket( PF_INET, SOCK_STREAM, 0 );
+  int socket = (int)::socket( PF_INET, SOCK_STREAM, 0 );
   if ( socket < 0 ) return -1;
 
   sockaddr_in address;
@@ -142,7 +142,7 @@ int socket_createAcceptor(int port, bool reuse)
 
 int socket_createConnector()
 {
-  return ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
+  return (int)::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
 }
 
 int socket_connect( int socket, const char* address, int port )
@@ -164,17 +164,17 @@ int socket_connect( int socket, const char* address, int port )
 int socket_accept( int s )
 {
   if ( !socket_isValid( s ) ) return -1;
-  return accept( s, 0, 0 );
+  return (int)accept( s, 0, 0 );
 }
 
 ssize_t socket_recv( int s, char* buf, size_t length )
 {
-  return recv( s, buf, length, 0 );
+  return recv( s, buf, (int)length, 0 );
 }
 
 ssize_t socket_send( int s, const char* msg, size_t length )
 {
-  return send( s, msg, length, 0 );
+  return send( s, msg, (int)length, 0 );
 }
 
 void socket_close( int s )
@@ -418,7 +418,7 @@ bool thread_spawn( THREAD_START_ROUTINE func, void* var, thread_id& thread )
 #ifdef _MSC_VER
   thread_id result = 0;
   unsigned int id = 0;
-  result = _beginthreadex( NULL, 0, func, var, 0, &id );
+  result = (unsigned int)_beginthreadex( NULL, 0, func, var, 0, &id );
   if ( result == 0 ) return false;
 #else
   thread_id result = 0;
@@ -457,7 +457,7 @@ void thread_detach( thread_id thread )
 thread_id thread_self()
 {
 #ifdef _MSC_VER
-  return (unsigned)GetCurrentThread();
+  return (unsigned int)GetCurrentThread();
 #else
   return pthread_self();
 #endif

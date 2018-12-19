@@ -101,6 +101,11 @@ typedef int ssize_t;
 #include <cstdlib>
 #include <memory>
 
+#if (__cplusplus >= 201402L || _MSC_VER >= 1900)
+#define HAVE_STD_UNIQUE_PTR
+#define HAVE_STD_SHARED_PTR
+#endif
+
 #if !defined(HAVE_STD_UNIQUE_PTR)
 #define SmartPtr std::auto_ptr
 #else

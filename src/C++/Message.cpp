@@ -52,7 +52,7 @@ Message::Message(const message_order &hdrOrder, const message_order &trlOrder, c
   m_trailer(trlOrder), m_validStructure( true ) {}
 
 Message::Message( const std::string& string, bool validate )
-throw( InvalidMessage )
+
 : m_validStructure( true )
 , m_tag( 0 )
 {
@@ -62,7 +62,7 @@ throw( InvalidMessage )
 Message::Message( const std::string& string,
                   const DataDictionary& dataDictionary,
                   bool validate )
-throw( InvalidMessage )
+
 : m_validStructure( true )
 , m_tag( 0 )
 {
@@ -73,7 +73,7 @@ Message::Message( const std::string& string,
                   const DataDictionary& sessionDataDictionary,
                   const DataDictionary& applicationDataDictionary,
                   bool validate )
-throw( InvalidMessage )
+
 : m_validStructure( true )
 , m_tag( 0 )
 {
@@ -86,7 +86,7 @@ Message::Message( const message_order &hdrOrder,
                   const std::string& string,
                   const DataDictionary& dataDictionary,
                   bool validate )
-throw( InvalidMessage )
+
 : FieldMap(order), m_header(hdrOrder),
   m_trailer(trlOrder), m_validStructure( true )
 {
@@ -100,7 +100,7 @@ Message::Message( const message_order &hdrOrder,
                   const DataDictionary& sessionDataDictionary,
                   const DataDictionary& applicationDataDictionary,
                   bool validate )
-throw( InvalidMessage )
+
 : FieldMap(order), m_header(hdrOrder),
   m_trailer(trlOrder), m_validStructure( true )
 {
@@ -247,8 +247,8 @@ std::string& Message::toString( std::string& str,
                                 int bodyLengthField, 
                                 int checkSumField ) const
 {
-  int length = bodyLength( beginStringField, bodyLengthField, checkSumField );
-  m_header.setField( IntField(bodyLengthField, length) );
+  std::size_t length = bodyLength( beginStringField, bodyLengthField, checkSumField );
+  m_header.setField( IntField(bodyLengthField, (int)length) );
   m_trailer.setField( CheckSumField(checkSumField, checkSum(checkSumField)) );
 
 #if defined(_MSC_VER) && _MSC_VER < 1300
@@ -337,7 +337,7 @@ void Message::setString( const std::string& string,
                          bool doValidation,
                          const DataDictionary* pSessionDataDictionary,
                          const DataDictionary* pApplicationDataDictionary )
-throw( InvalidMessage )
+
 {
   clear();
 
@@ -574,7 +574,7 @@ bool Message::isTrailerField( int field, const DataDictionary * pD )
 }
 
 SessionID Message::getSessionID( const std::string& qualifier ) const
-throw( FieldNotFound )
+
 {
   BeginString beginString;
   SenderCompID senderCompID;
@@ -600,8 +600,8 @@ void Message::validate() const
   {
     const BodyLength& aBodyLength = FIELD_GET_REF( m_header, BodyLength );
 
-    const int expectedLength = (int)aBodyLength;
-    const int actualLength = bodyLength();
+    const size_t expectedLength = aBodyLength;
+    const size_t actualLength = bodyLength();
 
     if ( expectedLength != actualLength )
     {
